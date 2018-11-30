@@ -1,6 +1,14 @@
 # newdeal-20181127
 
+## 01 : Maven 기본 자바 프로젝트 폴더 준비
 
+## 02 : 리터럴(literal), 변수(variables), 키보드 입력 사용
+
+- github.com/eomcs/eomcs-java-project 에서 v1.4 과제 해결
+
+## 03 : 배열과 흐름제어문(분기문, 반복문)
+
+- github.com/eomcs/eomcs-java-project 에서 v1.5 과제 해결
 
 ## 04 : 클래스와 데이터 타입
 
@@ -29,3 +37,23 @@
 ## 22 : 인스턴스 변수와 인스턴스 메서드가 필요한 이유
 
 - github.com/eomcs/eomcs-java-project 에서 v2.2 과제 활용
+
+## 24 : 생성자, setter/getter 사용
+
+- github.com/eomcs/eomcs-java-project 에서 v2.3, v2.4 과제 활용
+
+## 25 : 데이터 처리 코드를 별도의 클래스로 분리
+
+- github.com/eomcs/eomcs-java-project 에서 v2.5 과제 활용
+
+## 26 : 다형성, 다형적 변수, 제네릭
+
+- github.com/eomcs/eomcs-java-project 에서 v2.6 v2.7 과제 활용
+
+## 32 : 인터페이스, Iterator 디자인 패턴, 중첩클래스 사용
+
+- github.com/eomcs/eomcs-java-project 에서 v3.2, v3.3 과제 활용
+
+## 34 : 자바 컬렉션 api 사용, Command 디자인 패턴, 예외처리
+
+- github.com/eomcs/eomcs-java-project 에서 v3.4, v3.5, v3.6 과제 활용
