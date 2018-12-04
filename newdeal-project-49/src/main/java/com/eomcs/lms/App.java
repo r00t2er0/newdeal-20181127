@@ -1,12 +1,18 @@
 package com.eomcs.lms;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.Stack;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import com.eomcs.lms.dao.BoardDao;
-import com.eomcs.lms.dao.LessonDao;
+import com.eomcs.lms.dao.MemberDao;
+import com.eomcs.lms.dao.impl.MariaDBBoardDao;
+import com.eomcs.lms.dao.impl.MariaDBMemberDao;
 import com.eomcs.lms.handler.BoardAddCommand;
 import com.eomcs.lms.handler.BoardDeleteCommand;
 import com.eomcs.lms.handler.BoardDetailCommand;
@@ -19,6 +25,7 @@ import com.eomcs.lms.handler.LessonDeleteCommand;
 import com.eomcs.lms.handler.LessonDetailCommand;
 import com.eomcs.lms.handler.LessonListCommand;
 import com.eomcs.lms.handler.LessonUpdateCommand;
+import com.eomcs.lms.handler.LoginCommand;
 import com.eomcs.lms.handler.MemberAddCommand;
 import com.eomcs.lms.handler.MemberDeleteCommand;
 import com.eomcs.lms.handler.MemberDetailCommand;
@@ -31,10 +38,16 @@ public class App {
   static Stack<String> commandHistory = new Stack<>();
   static Queue<String> commandHistory2 = new LinkedList<>();
   
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
     
-    BoardDao boardDao = new BoardDao();
-    LessonDao lessonDao = new LessonDao();
+    //MyBatis SqlSessionFactory 준비
+    String resource = "com/eomcs/lms/conf/mybatis-config.xml";
+    InputStream inputStream = Resources.getResourceAsStream(resource);
+    SqlSessionFactory sqlSessionFactory =
+      new SqlSessionFactoryBuilder().build(inputStream);
+    
+    BoardDao boardDao = new MariaDBBoardDao(sqlSessionFactory);
+    MemberDao memberDao = new MariaDBMemberDao(sqlSessionFactory);
 
     HashMap<String,Command> commandMap = new HashMap<>();
     
@@ -45,9 +58,11 @@ public class App {
     commandMap.put("/board/delete", new BoardDeleteCommand(keyboard, boardDao));
     commandMap.put("hello", new HelloCommand(keyboard));
     
-    commandMap.put("/lesson/list", new LessonListCommand(keyboard, lessonDao));
-    commandMap.put("/lesson/detail", new LessonDetailCommand(keyboard, lessonDao));
-    commandMap.put("/lesson/add", new LessonAddCommand(keyboard, lessonDao));
+    commandMap.put("/auth/login", new LoginCommand(keyboard, memberDao));
+    
+    commandMap.put("/lesson/list", new LessonListCommand(keyboard));
+    commandMap.put("/lesson/detail", new LessonDetailCommand(keyboard));
+    commandMap.put("/lesson/add", new LessonAddCommand(keyboard));
     commandMap.put("/lesson/update", new LessonUpdateCommand(keyboard));
     commandMap.put("/lesson/delete", new LessonDeleteCommand(keyboard));
     
