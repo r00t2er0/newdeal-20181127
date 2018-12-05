@@ -1,7 +1,6 @@
 package com.eomcs.lms.handler;
 
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.Scanner;
 import com.eomcs.lms.dao.LessonDao;
 import com.eomcs.lms.domain.Lesson;

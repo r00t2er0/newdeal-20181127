@@ -17,7 +17,6 @@ public class BoardListCommand implements Command {
   
   public void execute() {
     try {
-      BoardDao boardDao = new BoardDao();
       List<Board> list = boardDao.findAll();
       
       for(Board board : list) {

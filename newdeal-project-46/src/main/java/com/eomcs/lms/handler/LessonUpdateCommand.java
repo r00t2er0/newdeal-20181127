@@ -1,5 +1,6 @@
 package com.eomcs.lms.handler;
 
+import java.sql.Date;
 import java.util.Scanner;
 import com.eomcs.lms.dao.LessonDao;
 import com.eomcs.lms.domain.Lesson;
@@ -21,39 +22,29 @@ public class LessonUpdateCommand implements Command {
       
       Lesson lesson = lessonDao.findByNo(Integer.parseInt(no));
       
-      
       System.out.printf("수업명(%s)? ", lesson.getTitle());
       lesson.setTitle(keyboard.nextLine());
       System.out.printf("설명(%s)? ", lesson.getContents());
       lesson.setContents(keyboard.nextLine());
       System.out.printf("시작일(%s)? ", lesson.getStartDate());
-      lesson.setStartDate(keyboard.nextLine());
+      Date sDate = Date.valueOf(keyboard.nextLine());
+      lesson.setStartDate(sDate);
       System.out.printf("종료일(%s)? ", lesson.getEndDate());
-      lesson.setEndDate(keyboard.nextLine());
-      System.out.printf("총수업시간(%s)? ", oldTot_hr);
-      String tot_hr = keyboard.nextLine();
-      System.out.printf("일수업시간(%s)? ", oldDay_hr);
-      String day_hr = keyboard.nextLine();
-      System.out.printf("강사(%s)? ", oldMno);
-      String mno = keyboard.nextLine();
-          
-      stmt.executeUpdate("update lesson set "
-          + "title='" + title + "',"
-          + "cont='" + cont + "',"
-          + "sdt='" + sdt + "',"
-          + "edt='" + edt + "',"
-          + "tot_hr=" + tot_hr + ","
-          + "day_hr=" + day_hr + ","
-          + "mno=" + mno
-          + " where lno=" + no);
+      Date eDate = Date.valueOf(keyboard.nextLine());
+      lesson.setEndDate(eDate);
+      System.out.printf("총수업시간(%s)? ", lesson.getTotalHours());
+      lesson.setTotalHours(Integer.parseInt(keyboard.nextLine()));
+      System.out.printf("일수업시간(%s)? ", lesson.getDayHours());
+      lesson.setDayHours(Integer.parseInt(keyboard.nextLine()));
+      System.out.printf("강사(%s)? ", lesson.getMno());
+      lesson.setMno(Integer.parseInt(keyboard.nextLine()));
       
+      lessonDao.update(lesson);
+
       System.out.println("변경했습니다.");
     
     } catch (Exception e){
       e.printStackTrace();
-    } finally {
-        try {stmt.close();} catch(Exception e) {}
-        try {con.close();} catch(Exception e) {}
-    }
+    } 
   }
 }

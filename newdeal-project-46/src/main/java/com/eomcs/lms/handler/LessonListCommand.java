@@ -17,7 +17,6 @@ public class LessonListCommand implements Command {
   
   public void execute() {
     try {
-      LessonDao lessonDao = new LessonDao();
       List<Lesson> list = lessonDao.findAll();
       
       for(Lesson lesson : list) {

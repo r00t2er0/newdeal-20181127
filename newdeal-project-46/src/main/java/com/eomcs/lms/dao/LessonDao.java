@@ -7,7 +7,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import org.mariadb.jdbc.Driver;
-import com.eomcs.lms.domain.Board;
 import com.eomcs.lms.domain.Lesson;
 
 public class LessonDao {
@@ -47,18 +46,21 @@ public class LessonDao {
         Statement stmt = con.createStatement();
       
       // SQL을 서버에 전송 => 서버에서 결과를 가져올 일을 할 객체를 리턴
-        ResultSet rs = stmt.executeQuery("select title, cont, sdt, edt, tot_hr, day_hr"
+        ResultSet rs = stmt.executeQuery("select title, cont, sdt, edt, tot_hr, day_hr, mno"
             + " from lesson"
             + " where lno=" + no);){
       
       // dbms에서 한 개의 레코드를 가져온다.
       if (rs.next()) {
         Lesson lesson= new Lesson();
+        lesson.setNo(no);
         lesson.setTitle(rs.getString("title"));
         lesson.setContents(rs.getString("cont"));
         lesson.setStartDate(rs.getDate("sdt"));
         lesson.setEndDate(rs.getDate("edt"));
         lesson.setTotalHours(rs.getInt("tot_hr"));
+        lesson.setDayHours(rs.getInt("day_hr"));
+        lesson.setMno(rs.getInt("mno"));
         return lesson;
       }else {
         return null;
@@ -95,16 +97,16 @@ public class LessonDao {
           "study",
           "1111");
       stmt = con.createStatement();
-      // SQL을 서버에 전송
+      
       return stmt.executeUpdate("update lesson set"
           + " title='" + lesson.getTitle() + "',"
           + " cont='" + lesson.getContents() + "',"
           + " sdt='" + lesson.getStartDate() + "',"
           + " edt='" + lesson.getEndDate() + "',"
-          + "tot_hr=" + lesson.getTotalHours() + ","
-          + "day_hr=" + lesson.getDayHours() + ","
-          + "mno=" + mno
-          + " where lno=" + no);
+          + " tot_hr=" + lesson.getTotalHours() + ","
+          + " day_hr=" + lesson.getDayHours() + ","
+          + " mno=" + lesson.getMno()
+          + " where lno=" + lesson.getNo());
       
     } finally {
         try {stmt.close();} catch(Exception e) {}
@@ -123,7 +125,7 @@ public class LessonDao {
           "1111");
       stmt = con.createStatement();
       
-      return stmt.executeUpdate("delete from board where bno=" + no); 
+      return stmt.executeUpdate("delete from lesson where lno=" + no); 
           
     } finally {
         try {stmt.close();} catch(Exception e) {}
