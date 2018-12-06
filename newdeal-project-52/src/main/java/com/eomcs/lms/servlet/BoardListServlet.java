@@ -1,8 +1,8 @@
 package com.eomcs.lms.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -40,23 +40,21 @@ public class BoardListServlet extends HttpServlet{
   }
   
   @Override
-  public void doGet(HttpServletRequest req, HttpServletResponse res)
+  public void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    res.setContentType("text/plain;charset=UTF-8");
-    PrintWriter out = res.getWriter();
-    out.println("게시물 목록(jh)");
-    
     try {
-      /*BoardDao boardDao = iocContainer.getBean(BoardDao.class);*/
       List<Board> list = boardDao.findAll();
+      request.setAttribute("list", list);
       
-      for(Board board : list) {
-        out.printf("%3d, %-20s, %s, %d\n", 
-            board.getNo(), board.getContents(), 
-            board.getCreatedDate(), board.getViewCount());
-      }
+      //JSP로 실행을 위임한다.
+      RequestDispatcher rd = request.getRequestDispatcher("/board/list.jsp");
+
+      // 출력 콘텐트의 타입을 include 하는 쪽에서 지정해야 하낟.
+      response.setContentType("text/html;charset=UTF-8");
+      rd.include(request, response);
     } catch (Exception e){
       e.printStackTrace();
+      throw new ServletException(e);
     } 
   }
 }

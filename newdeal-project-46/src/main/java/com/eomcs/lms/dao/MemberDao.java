@@ -38,7 +38,7 @@ public class MemberDao {
     } 
   }
   
-  public Lesson findByNo(int no) throws Exception{
+  public Member findByNo(int no) throws Exception{
     DriverManager.registerDriver(new Driver());
     try (Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb",
         "study",
@@ -47,29 +47,25 @@ public class MemberDao {
         Statement stmt = con.createStatement();
       
       // SQL을 서버에 전송 => 서버에서 결과를 가져올 일을 할 객체를 리턴
-        ResultSet rs = stmt.executeQuery("select title, cont, sdt, edt, tot_hr, day_hr, mno"
-            + " from lesson"
-            + " where lno=" + no);){
+        ResultSet rs = stmt.executeQuery("select name,email,pwd,photo,tel from member where mno=" + no);){
       
       // dbms에서 한 개의 레코드를 가져온다.
       if (rs.next()) {
-        Lesson lesson= new Lesson();
-        lesson.setNo(no);
-        lesson.setTitle(rs.getString("title"));
-        lesson.setContents(rs.getString("cont"));
-        lesson.setStartDate(rs.getDate("sdt"));
-        lesson.setEndDate(rs.getDate("edt"));
-        lesson.setTotalHours(rs.getInt("tot_hr"));
-        lesson.setDayHours(rs.getInt("day_hr"));
-        lesson.setMno(rs.getInt("mno"));
-        return lesson;
+        Member member= new Member();
+        member.setNo(no);
+        member.setName(rs.getString("name"));
+        member.setEmail(rs.getString("email"));
+        member.setPassword(rs.getString("pwd"));
+        member.setPhoto(rs.getString("photo"));
+        member.setTel(rs.getString("tel"));
+        return member;
       }else {
         return null;
       }
     }
   }
   
-  public int insert(Lesson lesson) throws Exception{
+  public int insert(Member member) throws Exception{
     DriverManager.registerDriver(new Driver());
     try (Connection con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb",
         "study",
@@ -77,18 +73,17 @@ public class MemberDao {
         Statement stmt = con.createStatement();) {
       
       // SQL을 서버에 전송
-      return stmt.executeUpdate("insert into lesson(title, cont, sdt, edt, tot_hr, day_hr, mno)"
-          + " values('" + lesson.getTitle() + "','"
-          + lesson.getContents() + "','"
-          + lesson.getStartDate() + "','"
-          + lesson.getEndDate() + "',"
-          + lesson.getTotalHours() + ","
-          + lesson.getDayHours() + "," 
-          + lesson.getNo() + ")");
+      return stmt.executeUpdate("insert into member(name,email,pwd,photo,tel,cdt)"
+          + " values('" + member.getName() + "','"
+          + member.getEmail() + "','"
+          + member.getPassword() + "','"
+          + member.getPhoto() + "','"
+          + member.getTel() + "','"
+          + member.getRegisteredDate() + "')");
     }
   }
   
-  public int update(Lesson lesson) throws Exception{
+  public int update(Member member) throws Exception{
     DriverManager.registerDriver(new Driver());
     Connection con = null;
     Statement stmt = null;
@@ -99,15 +94,13 @@ public class MemberDao {
           "1111");
       stmt = con.createStatement();
       
-      return stmt.executeUpdate("update lesson set"
-          + " title='" + lesson.getTitle() + "',"
-          + " cont='" + lesson.getContents() + "',"
-          + " sdt='" + lesson.getStartDate() + "',"
-          + " edt='" + lesson.getEndDate() + "',"
-          + " tot_hr=" + lesson.getTotalHours() + ","
-          + " day_hr=" + lesson.getDayHours() + ","
-          + " mno=" + lesson.getMno()
-          + " where lno=" + lesson.getNo());
+      return stmt.executeUpdate("update member set "
+          + "name='" + member.getName() + "',"
+          + "email='" + member.getEmail() + "',"
+          + "pwd='" + member.getPassword() + "',"
+          + "photo='" + member.getPhoto() + "',"
+          + "tel='" + member.getTel() + "'"
+          + " where mno=" + member.getNo());
       
     } finally {
         try {stmt.close();} catch(Exception e) {}
@@ -126,7 +119,7 @@ public class MemberDao {
           "1111");
       stmt = con.createStatement();
       
-      return stmt.executeUpdate("delete from lesson where lno=" + no); 
+      return stmt.executeUpdate("delete from member where mno=" + no); 
           
     } finally {
         try {stmt.close();} catch(Exception e) {}

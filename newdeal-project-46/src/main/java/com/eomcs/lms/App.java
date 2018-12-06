@@ -54,10 +54,10 @@ public class App {
     commandMap.put("/lesson/delete", new LessonDeleteCommand(keyboard, lessonDao));
     
     commandMap.put("/member/list", new MemberListCommand(keyboard, memberDao));
-    commandMap.put("/member/detail", new MemberDetailCommand(keyboard));
-    commandMap.put("/member/add", new MemberAddCommand(keyboard));
-    commandMap.put("/member/update", new MemberUpdateCommand(keyboard));
-    commandMap.put("/member/delete", new MemberDeleteCommand(keyboard));
+    commandMap.put("/member/detail", new MemberDetailCommand(keyboard, memberDao));
+    commandMap.put("/member/add", new MemberAddCommand(keyboard, memberDao));
+    commandMap.put("/member/update", new MemberUpdateCommand(keyboard, memberDao));
+    commandMap.put("/member/delete", new MemberDeleteCommand(keyboard, memberDao));
     
     
     while (true) {

@@ -1,22 +1,21 @@
 package com.eomcs.lms.handler;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.List;
 import java.util.Scanner;
 import org.mariadb.jdbc.Driver;
-import com.eomcs.lms.domain.Lesson;
-import com.eomcs.lms.domain.Member;
+import com.eomcs.lms.dao.MemberDao;
 
 public class MemberDetailCommand implements Command {
   
   Scanner keyboard;
+  MemberDao memberDao;
   
-  public MemberDetailCommand(Scanner keyboard) {
+  public MemberDetailCommand(Scanner keyboard, MemberDao memberDao) {
     this.keyboard = keyboard;
+    this.memberDao = memberDao;
   }
   
   public void execute() {

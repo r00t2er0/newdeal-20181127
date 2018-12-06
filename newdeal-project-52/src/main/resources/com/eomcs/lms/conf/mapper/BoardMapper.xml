@@ -5,7 +5,7 @@
 <mapper namespace="BoardDao">
 
   <resultMap type="board" id="BoardMap">
-    <result column="bno" property="no"/>
+    <id column="bno" property="no"/>
     <result column="cont" property="contents"/>
     <result column="cdt" property="createdDate"/>
     <result column="view" property="viewCount"/>
