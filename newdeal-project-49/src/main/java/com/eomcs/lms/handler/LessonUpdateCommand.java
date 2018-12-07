@@ -1,79 +1,50 @@
 package com.eomcs.lms.handler;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.Date;
 import java.util.Scanner;
-import org.mariadb.jdbc.Driver;
+import com.eomcs.lms.dao.LessonDao;
+import com.eomcs.lms.domain.Lesson;
 
 public class LessonUpdateCommand implements Command {
   
   Scanner keyboard;
+  LessonDao lessonDao;
   
-  public LessonUpdateCommand(Scanner keyboard) {
+  public LessonUpdateCommand(Scanner keyboard, LessonDao lessonDao) {
     this.keyboard = keyboard;
+    this.lessonDao = lessonDao;
   }
   
   public void execute() {
-    
-    Connection con = null;
-    Statement stmt = null;
-    
     try {
-      DriverManager.registerDriver(new Driver());
-      con = DriverManager.getConnection("jdbc:mariadb://localhost:3306/studydb",
-          "study",
-          "1111");
-      stmt = con.createStatement();
-      
       System.out.print("번호? ");
       String no = keyboard.nextLine();
       
-      ResultSet rs = stmt.executeQuery(
-          "select title,cont,sdt,edt,tot_hr,day_hr,mno from lesson where lno=" + no);
-      rs.next();
-      String oldTitle = rs.getString("title");
-      String oldCont = rs.getString("cont");
-      String oldSdt = rs.getString("sdt");
-      String oldEdt = rs.getString("edt");
-      String oldTot_hr = rs.getString("tot_hr");
-      String oldDay_hr = rs.getString("day_hr");
-      String oldMno = rs.getString("mno");
-      rs.close();
+      Lesson lesson = lessonDao.findByNo(Integer.parseInt(no));
       
-      System.out.printf("수업명(%s)? ", oldTitle);
-      String title = keyboard.nextLine();
-      System.out.printf("설명(%s)? ", oldCont);
-      String cont = keyboard.nextLine();
-      System.out.printf("시작일(%s)? ", oldSdt);
-      String sdt = keyboard.nextLine();
-      System.out.printf("종료일(%s)? ", oldEdt);
-      String edt = keyboard.nextLine();
-      System.out.printf("총수업시간(%s)? ", oldTot_hr);
-      String tot_hr = keyboard.nextLine();
-      System.out.printf("일수업시간(%s)? ", oldDay_hr);
-      String day_hr = keyboard.nextLine();
-      System.out.printf("강사(%s)? ", oldMno);
-      String mno = keyboard.nextLine();
-          
-      stmt.executeUpdate("update lesson set "
-          + "title='" + title + "',"
-          + "cont='" + cont + "',"
-          + "sdt='" + sdt + "',"
-          + "edt='" + edt + "',"
-          + "tot_hr=" + tot_hr + ","
-          + "day_hr=" + day_hr + ","
-          + "mno=" + mno
-          + " where lno=" + no);
+      System.out.printf("수업명(%s)? ", lesson.getTitle());
+      lesson.setTitle(keyboard.nextLine());
+      System.out.printf("설명(%s)? ", lesson.getContents());
+      lesson.setContents(keyboard.nextLine());
+      System.out.printf("시작일(%s)? ", lesson.getStartDate());
+      Date sDate = Date.valueOf(keyboard.nextLine());
+      lesson.setStartDate(sDate);
+      System.out.printf("종료일(%s)? ", lesson.getEndDate());
+      Date eDate = Date.valueOf(keyboard.nextLine());
+      lesson.setEndDate(eDate);
+      System.out.printf("총수업시간(%s)? ", lesson.getTotalHours());
+      lesson.setTotalHours(Integer.parseInt(keyboard.nextLine()));
+      System.out.printf("일수업시간(%s)? ", lesson.getDayHours());
+      lesson.setDayHours(Integer.parseInt(keyboard.nextLine()));
+      System.out.printf("강사(%s)? ", lesson.getMno());
+      lesson.setMno(Integer.parseInt(keyboard.nextLine()));
       
+      lessonDao.update(lesson);
+
       System.out.println("변경했습니다.");
     
     } catch (Exception e){
       e.printStackTrace();
-    } finally {
-        try {stmt.close();} catch(Exception e) {}
-        try {con.close();} catch(Exception e) {}
-    }
+    } 
   }
 }

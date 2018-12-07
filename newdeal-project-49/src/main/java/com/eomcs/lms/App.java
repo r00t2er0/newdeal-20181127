@@ -10,8 +10,10 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import com.eomcs.lms.dao.BoardDao;
+import com.eomcs.lms.dao.LessonDao;
 import com.eomcs.lms.dao.MemberDao;
 import com.eomcs.lms.dao.impl.MariaDBBoardDao;
+import com.eomcs.lms.dao.impl.MariaDBLessonDao;
 import com.eomcs.lms.dao.impl.MariaDBMemberDao;
 import com.eomcs.lms.handler.BoardAddCommand;
 import com.eomcs.lms.handler.BoardDeleteCommand;
@@ -47,6 +49,7 @@ public class App {
       new SqlSessionFactoryBuilder().build(inputStream);
     
     BoardDao boardDao = new MariaDBBoardDao(sqlSessionFactory);
+    LessonDao lessonDao = new MariaDBLessonDao(sqlSessionFactory);
     MemberDao memberDao = new MariaDBMemberDao(sqlSessionFactory);
 
     HashMap<String,Command> commandMap = new HashMap<>();
@@ -60,11 +63,11 @@ public class App {
     
     commandMap.put("/auth/login", new LoginCommand(keyboard, memberDao));
     
-    commandMap.put("/lesson/list", new LessonListCommand(keyboard));
-    commandMap.put("/lesson/detail", new LessonDetailCommand(keyboard));
-    commandMap.put("/lesson/add", new LessonAddCommand(keyboard));
-    commandMap.put("/lesson/update", new LessonUpdateCommand(keyboard));
-    commandMap.put("/lesson/delete", new LessonDeleteCommand(keyboard));
+    commandMap.put("/lesson/list", new LessonListCommand(keyboard, lessonDao));
+    commandMap.put("/lesson/detail", new LessonDetailCommand(keyboard, lessonDao));
+    commandMap.put("/lesson/add", new LessonAddCommand(keyboard, lessonDao));
+    commandMap.put("/lesson/update", new LessonUpdateCommand(keyboard, lessonDao));
+    commandMap.put("/lesson/delete", new LessonDeleteCommand(keyboard, lessonDao));
     
     commandMap.put("/member/list", new MemberListCommand(keyboard));
     commandMap.put("/member/detail", new MemberDetailCommand(keyboard));
