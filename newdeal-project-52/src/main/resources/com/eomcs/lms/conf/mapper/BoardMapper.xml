@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="BoardDao">
+<mapper namespace="com.eomcs.lms.dao.BoardDao">
 
   <resultMap type="board" id="BoardMap">
     <id column="bno" property="no"/>
@@ -11,6 +11,14 @@
     <result column="view" property="viewCount"/>
     <result column="mno" property="writerNo"/>
     <result column="lno" property="lessonNo"/>
+    <association property="lesson" javaType="Lesson">
+      <id column="lno" property="no"/>
+      <result column="title" property="title"/>
+    </association>
+    <association property="writer" javaType="Member">
+      <id column="mno" property="no"/>
+      <result column="name" property="name"/>
+    </association>
     
   </resultMap>
   <select id="findAll" resultMap="BoardMap">
@@ -24,13 +32,17 @@
   
   <select id="findByNo" resultMap="BoardMap" parameterType="int">
     select 
-      bno, 
-      cont, 
-      cdt, 
-      view, 
-      mno, 
-      lno
-    from board
+      b.bno, 
+      b.cont, 
+      b.cdt, 
+      b.view, 
+      m.mno, 
+      m.name,
+      l.lno,
+      l.title
+    from board b
+      join member m on b.mno = m.mno
+      join lesson l on b.lno = l.lno
     where bno=#{value}
   </select>
   

@@ -8,6 +8,8 @@ public class Board {
   private int viewCount;
   private int writerNo;
   private int lessonNo;
+  private Lesson lesson;
+  private Member writer;
   
   public int getWriterNo() {
     return writerNo;
@@ -44,6 +46,18 @@ public class Board {
   }
   public void setViewCount(int viewCount) {
     this.viewCount = viewCount;
+  }
+  public Lesson getLesson() {
+    return lesson;
+  }
+  public void setLesson(Lesson lesson) {
+    this.lesson = lesson;
+  }
+  public Member getWriter() {
+    return writer;
+  }
+  public void setWriter(Member writer) {
+    this.writer = writer;
   }
   
   
