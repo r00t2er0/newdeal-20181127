@@ -1,6 +1,7 @@
 package com.eomcs.lms.dao.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import com.eomcs.lms.dao.MemberDao;
@@ -23,6 +24,12 @@ public class MariaDBMemberDao implements MemberDao{
       params.put("password", password);
       
       return sqlSession.selectOne("MemberDao.findByEmailPassword", params);
+    } 
+  }
+  
+  public List<Member> findAll() throws Exception{
+    try (SqlSession sqlSession = sqlSessionFactory.openSession();) {
+      return sqlSession.selectList("MemberDao.findAll");
     } 
   }
 

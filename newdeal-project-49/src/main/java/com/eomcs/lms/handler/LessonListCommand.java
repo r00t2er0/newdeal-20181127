@@ -25,6 +25,7 @@ public class LessonListCommand implements Command {
             lesson.getStartDate(), lesson.getEndDate(),
             lesson.getTotalHours());
       }
+      
     } catch(Exception e) {
       e.printStackTrace();
     } 

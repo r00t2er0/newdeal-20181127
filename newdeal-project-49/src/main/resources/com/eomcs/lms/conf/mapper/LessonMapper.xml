@@ -12,8 +12,9 @@
     <result column="edt" property="endDate"/>
     <result column="tot_hr" property="totalHours"/>
     <result column="day_hr" property="dayHours"/>
-    
+    <result column="mno" property="mno"/>
   </resultMap>
+  
   <select id="findAll" resultMap="LessonMap">
     select 
 	    lno, 
