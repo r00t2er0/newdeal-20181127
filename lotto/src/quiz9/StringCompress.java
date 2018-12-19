@@ -1,25 +1,31 @@
 package quiz9;
 
-import java.util.Arrays;
-
 public class StringCompress {
 
   void compress(String str) {
-    
-    String s = "";
+    String comstr = "";
     int Cnt = 1;
     
-    s += str.charAt(0);
-    for(int i=1; i<str.length(); i++) {
-      if(str.charAt(i-1) == str.charAt(i)){
+    //카운트
+    for(int i=0; i<str.length()-1; i++) {
+      if(str.charAt(i) == str.charAt(i+1)) {
         Cnt++;
-      }else {
-        s += Cnt;
-        s += str.charAt(i);
+        if(i == str.length()-2) {
+          comstr += str.charAt(str.length()-1);
+          comstr += Cnt;
+        }
+      }else if(str.charAt(i) != str.charAt(i+1)){
+        comstr += str.charAt(i);
+        comstr += Cnt;
         Cnt = 1;
+        if(i == str.length()-2) {
+          comstr += str.charAt(str.length()-1);
+          comstr += Cnt;
+        }
       }
     }
-    s += Cnt;
-    System.out.println(s);
+    
+    //출력
+    System.out.println(comstr);
   }
 }
