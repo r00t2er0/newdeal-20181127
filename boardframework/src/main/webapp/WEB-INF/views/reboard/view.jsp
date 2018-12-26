@@ -13,6 +13,10 @@
 		control = "${root}/reboard";
 		
 		initVars();
+		
+		getMemoList();
+		
+		
 		$('.writeBtn').click(function(){
 			$('#commonForm').attr('method', 'get').attr('action', writepath).submit();
 		});
@@ -33,6 +37,120 @@
 			$('#commonForm').attr('method', 'get').attr('action', listpath).submit();
 		});
 		
+		//////////////////////////////댓글///////////////////////////////////
+		$('#memoBtn').click(function(){
+			var seq = "${article.seq}";
+			var mcontent = $("#mcontent").val();
+			$('#mcontent').val('');
+			var parameter = JSON.stringify({'seq' : seq, 'mcontent' : mcontent});
+			
+			if(mcontent.trim().length != 0){
+				$.ajax({
+					url : '${root}/memo',
+					type : 'POST',
+					contentType : 'application/json;charset=UTF-8',
+					dataType : 'json',
+					data : parameter,
+					success : function(data){
+						makeList(data);
+					}
+				});
+			}
+		});
+		
+		$(document).on("click", ".viewMemoModifyBtn", function(){
+			var mseq = $(this).parent("td").attr("memo-mseq");
+			$("#div" + mseq).css("display", "");
+		});
+		
+		$(document).on("click", ".memoCancelBtn", function(){
+			var mseq = $(this).parents("td").attr("memo-mseq");
+			$("#div" + mseq).css("display", "none");
+		});
+		
+		$(document).on("click", ".memoModifyBtn", function(){
+			var mseq = $(this).parents("td").attr("memo-mseq");
+			$("#div" + mseq).css("display", "none");
+			
+			var seq = '${article.seq}';
+			var mcontent = $("#mcontent" + mseq).val();
+			var parameter = JSON.stringify({'mseq' : mseq, 'seq' : seq, 'mcontent' : mcontent});
+			
+			if(mcontent.trim().length != 0){
+				$.ajax({
+					url : '${root}/memo',
+					type : 'PUT',
+					contentType : 'application/json;charset=UTF-8',
+					dataType : 'json',
+					data : parameter,
+					success : function(data){
+						makeList(data);
+					}
+				});
+			}
+		});
+		
+		$(document).on("click", ".memoDeleteBtn", function(){
+			if(confirm("real delete?")) {
+				var mseq = $(this).parent("td").attr("memo-mseq");
+				$.ajax({
+					url : '${root}/memo/${article.seq}/' + mseq,
+					type : 'DELETE',
+					contentType : 'application/json;charset=UTF-8',
+					dataType : 'json',
+					success : function(data){
+						makeList(data);
+					}
+				});
+			}
+		});
+		
+		function getMemoList(){
+			$.ajax({
+				url : '${root}/memo/${article.seq}',
+				type : 'GET',
+				contentType : 'application/json;charset=UTF-8',
+				dataType : 'json',
+				success : function(data){
+					makeList(data);
+				}
+			});
+		}
+		
+		function makeList(memos){
+			$('#memoview').empty();
+			var mlist = memos.memolist;
+			var output = '';
+			
+			var len = mlist.length;
+			for(var i =0; i<len; i++){
+				output += '<tr>'; 
+				output += ' <td width="150" height="70">' + mlist[i].name + '</td>'; 
+				output += ' <td>' + mlist[i].mcontent + '</td>'; 
+				output += ' <td width="200">' + mlist[i].mtime + '</td>';
+				if(mlist[i].id == '${userInfo.id}') {
+						output += '	<td width="120"  memo-mseq="' + mlist[i].mseq + '">';
+						output += '		<label class="viewMemoModifyBtn">수정</label>';
+						output += '		<label class="memoDeleteBtn">삭제</label>';
+						output += '	</td>';
+						output += '</tr>';
+						output += '<tr>';
+						output += '	<td colspan="4" memo-mseq="' + mlist[i].mseq + '">';
+						output += '		<div id="div' + mlist[i].mseq + '"style="display: none;">';
+						output += ' 		<textarea id="mcontent' + mlist[i].mseq + '" stype="resize: non;" rows="3" cols="150">' + mlist[i].mcontent + '</textarea>';
+						output += ' 		<input type="button" value="수정" class="memoModifyBtn">';
+						output += ' 		<input type="button" value="취소" class="memoCancelBtn">';
+						output += ' 	</div>';
+						output += ' </td>';
+				}
+				output += '</tr>';
+				output += '<tr>';
+				output += '	<td class="bg_board_title_02" height="1" colspan="11"';
+				output += ' 	style="overflow: hidden; padding: 0px"></td>';
+				output += ' </tr>';
+			}
+			$('#memoview').append(output);
+		}
 	});
 </script>
 <!-- title -->
@@ -60,7 +178,13 @@
 			border="0" align="absmiddle" alt="글쓰기"> 
 		<img src="${root}/img/board/btn_reply.gif" class="replyBtn" width="40" height="22"
 			border="0" align="absmiddle" alt="답글">
-		
+			
+		<c:if test="${userInfo.id == article.id}">
+			<img src="${root}/img/board/btn_modify.gif" class="updateBtn" width="40" height="22"
+				border="0" align="absmiddle" alt="수정">	
+			<img src="${root}/img/board/btn_delete.gif" class="deleteBtn" width="40" height="22"
+				border="0" align="absmiddle" alt="삭제">	
+		</c:if>
 		</td>
 		
 		<td valign="bottom" width="100%" style="padding-left: 4px"></td>
@@ -165,7 +289,16 @@
 	</tr>
 </table>
 <br>
-
+<table cellpadding="5" cellspacing="5" border="0" width="100%" >
+<tr>
+	<td colspan="4">
+		<textarea id="mcontent" stype="resize: non;" rows="3" cols="200" placeholder="댓글"></textarea>
+		<input type="button" id="memoBtn" value="작성">
+	</td>
+	
+</tr>
+<tbody id="memoview"></tbody>
+</table>
 </body>
 </html>
 </c:if>
